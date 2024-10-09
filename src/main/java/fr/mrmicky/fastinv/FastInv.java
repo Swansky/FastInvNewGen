@@ -23,6 +23,8 @@
  */
 package fr.mrmicky.fastinv;
 
+
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -32,6 +34,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -41,10 +44,10 @@ import java.util.stream.IntStream;
 
 /**
  * Lightweight and easy-to-use inventory API for Bukkit plugins.
- * The project is on <a href="https://github.com/MrMicky-FR/FastInv">GitHub</a>.
+ * The project is on <a href="https://github.com/Swansky/FastInvNewGen">GitHub</a>.
  *
  * @author MrMicky
- * @version 3.1.0
+ * @version 1.0.0
  */
 public class FastInv implements InventoryHolder {
 
@@ -72,11 +75,23 @@ public class FastInv implements InventoryHolder {
      *
      * @param size  a multiple of 9 as the size of the inventory
      * @param title the title (name) of the inventory
-     * @see Bukkit#createInventory(InventoryHolder, int, String)
+     * @see Bukkit#createInventory(InventoryHolder, int, Component)
      */
     public FastInv(int size, String title) {
+        this(size, Component.text(title));
+    }
+
+    /**
+     * Create a new FastInv with a custom size and title.
+     *
+     * @param size  a multiple of 9 as the size of the inventory
+     * @param title the title (name) of the inventory
+     * @see Bukkit#createInventory(InventoryHolder, int, Component)
+     */
+    public FastInv(int size, Component title) {
         this(owner -> Bukkit.createInventory(owner, size, title));
     }
+
 
     /**
      * Create a new FastInv with a custom type.
@@ -93,9 +108,20 @@ public class FastInv implements InventoryHolder {
      *
      * @param type  the type of the inventory
      * @param title the title of the inventory
-     * @see Bukkit#createInventory(InventoryHolder, InventoryType, String)
+     * @see Bukkit#createInventory(InventoryHolder, InventoryType, Component)
      */
     public FastInv(InventoryType type, String title) {
+        this(owner -> Bukkit.createInventory(owner, type, Component.text(title)));
+    }
+
+    /**
+     * Create a new FastInv with a custom type and title.
+     *
+     * @param type  the type of the inventory
+     * @param title the title of the inventory
+     * @see Bukkit#createInventory(InventoryHolder, InventoryType, Component)
+     */
+    public FastInv(InventoryType type, Component title) {
         this(owner -> Bukkit.createInventory(owner, type, title));
     }
 
@@ -306,7 +332,7 @@ public class FastInv implements InventoryHolder {
     public int[] getBorders() {
         int size = this.inventory.getSize();
         return IntStream.range(0, size).filter(i -> size < 27 || i < 9
-                || i % 9 == 0 || (i - 8) % 9 == 0 || i > size - 9).toArray();
+                                                    || i % 9 == 0 || (i - 8) % 9 == 0 || i > size - 9).toArray();
     }
 
     /**
@@ -317,8 +343,8 @@ public class FastInv implements InventoryHolder {
     public int[] getCorners() {
         int size = this.inventory.getSize();
         return IntStream.range(0, size).filter(i -> i < 2 || (i > 6 && i < 10)
-                || i == 17 || i == size - 18
-                || (i > size - 11 && i < size - 7) || i > size - 3).toArray();
+                                                    || i == 17 || i == size - 18
+                                                    || (i > size - 11 && i < size - 7) || i > size - 3).toArray();
     }
 
     /**
@@ -327,7 +353,7 @@ public class FastInv implements InventoryHolder {
      * @return the Bukkit inventory
      */
     @Override
-    public Inventory getInventory() {
+    public @NotNull Inventory getInventory() {
         return this.inventory;
     }
 

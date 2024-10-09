@@ -1,5 +1,6 @@
 package fr.mrmicky.fastinv;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -46,9 +47,20 @@ public class PaginatedFastInv extends FastInv {
      *
      * @param size  a multiple of 9 as the size of the inventory
      * @param title the title (name) of the inventory
-     * @see Bukkit#createInventory(InventoryHolder, int, String)
+     * @see Bukkit#createInventory(InventoryHolder, int, net.kyori.adventure.text.Component)
      */
     public PaginatedFastInv(int size, String title) {
+        this(size, Component.text(title));
+    }
+
+    /**
+     * Create a new FastInv with a custom size and title.
+     *
+     * @param size  a multiple of 9 as the size of the inventory
+     * @param title the title (name) of the inventory
+     * @see Bukkit#createInventory(InventoryHolder, int, net.kyori.adventure.text.Component)
+     */
+    public PaginatedFastInv(int size, Component title) {
         this(owner -> Bukkit.createInventory(owner, size, title));
     }
 
@@ -67,9 +79,20 @@ public class PaginatedFastInv extends FastInv {
      *
      * @param type  the type of the inventory
      * @param title the title of the inventory
-     * @see Bukkit#createInventory(InventoryHolder, InventoryType, String)
+     * @see Bukkit#createInventory(InventoryHolder, InventoryType, Component)
      */
     public PaginatedFastInv(InventoryType type, String title) {
+        this(type, Component.text(title));
+    }
+
+    /**
+     * Create a new FastInv with a custom type and title.
+     *
+     * @param type  the type of the inventory
+     * @param title the title of the inventory
+     * @see Bukkit#createInventory(InventoryHolder, InventoryType, Component)
+     */
+    public PaginatedFastInv(InventoryType type, Component title) {
         this(owner -> Bukkit.createInventory(owner, type, title));
     }
 

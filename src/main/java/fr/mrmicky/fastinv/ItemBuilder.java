@@ -23,6 +23,8 @@
  */
 package fr.mrmicky.fastinv;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -44,7 +46,7 @@ import java.util.function.Consumer;
  */
 public class ItemBuilder {
 
-    private final ItemStack item;
+    private ItemStack item;
 
     public static ItemBuilder copyOf(ItemStack item) {
         return new ItemBuilder(item.clone());
@@ -83,7 +85,9 @@ public class ItemBuilder {
     }
 
     public ItemBuilder type(Material material) {
-        return edit(item -> item.setType(material));
+        return edit(item -> {
+            this.item = item.withType(material);
+        });
     }
 
     public ItemBuilder data(int data) {
@@ -116,50 +120,68 @@ public class ItemBuilder {
     }
 
     public ItemBuilder name(String name) {
-        return meta(meta -> meta.setDisplayName(name));
+        return name(Component.text(name));
+    }
+
+    public ItemBuilder name(Component name) {
+        return meta(meta -> meta.displayName(name));
     }
 
     public ItemBuilder lore(String lore) {
+        return lore(Collections.singletonList(Component.text(lore)));
+    }
+
+    public ItemBuilder lore(Component lore) {
         return lore(Collections.singletonList(lore));
     }
 
     public ItemBuilder lore(String... lore) {
+        return lore(Arrays.stream(lore)
+                .map(Component::text)
+                .map(Component.class::cast).toList());
+    }
+
+    public ItemBuilder lore(Component... lore) {
         return lore(Arrays.asList(lore));
     }
 
-    public ItemBuilder lore(List<String> lore) {
-        return meta(meta -> meta.setLore(lore));
+
+    public ItemBuilder lore(List<Component> lore) {
+        return meta(meta -> meta.lore(lore));
     }
 
     public ItemBuilder addLore(String line) {
         return meta(meta -> {
-            List<String> lore = meta.getLore();
+            List<Component> lore = meta.lore();
+            TextComponent lineComponent = Component.text(line);
 
             if (lore == null) {
-                meta.setLore(Collections.singletonList(line));
+                meta.lore(Collections.singletonList(lineComponent));
                 return;
             }
 
-            lore.add(line);
-            meta.setLore(lore);
+            lore.add(lineComponent);
+            meta.lore(lore);
         });
     }
 
     public ItemBuilder addLore(String... lines) {
-        return addLore(Arrays.asList(lines));
+        return addLore(Arrays.stream(lines)
+                .map(Component::text)
+                .map(Component.class::cast).toList());
     }
 
-    public ItemBuilder addLore(List<String> lines) {
+    public ItemBuilder addLore(List<Component> lines) {
         return meta(meta -> {
-            List<String> lore = meta.getLore();
+            List<Component> lore = meta.lore();
 
             if (lore == null) {
-                meta.setLore(lines);
+                meta.lore(lines);
                 return;
             }
 
             lore.addAll(lines);
-            meta.setLore(lore);
+            meta.lore(lore);
         });
     }
 
